@@ -9,7 +9,7 @@
         /* ESTILO GENERAL */
         body {
             font-family: 'Poppins', sans-serif;
-            background-color: #f0f4f8; /* Fondo gris muy suave */
+            background-color: #f0f4f8;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -23,7 +23,7 @@
             background: #ffffff;
             padding: 3rem;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Sombra elegante */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             text-align: center;
             width: 100%;
             max-width: 400px;
@@ -31,7 +31,7 @@
         }
         
         .card:hover {
-            transform: translateY(-5px); /* Pequeña elevación al pasar el mouse */
+            transform: translateY(-5px);
         }
 
         /* ICONO Y TITULOS */
@@ -69,20 +69,21 @@
             letter-spacing: 1px;
         }
 
-        input[type="number"] {
+        /* Usamos text pero forzamos teclado numérico para tener control total */
+        input[type="text"] {
             width: 100%;
             padding: 15px;
             border: 2px solid #e2e8f0;
             border-radius: 10px;
             font-size: 18px;
             color: #2d3748;
-            box-sizing: border-box; /* Para que el padding no rompa el ancho */
+            box-sizing: border-box;
             transition: all 0.3s ease;
             outline: none;
         }
 
-        input[type="number"]:focus {
-            border-color: #4299e1; /* Azul al escribir */
+        input[type="text"]:focus {
+            border-color: #4299e1;
             box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
         }
 
@@ -90,7 +91,7 @@
         button {
             width: 100%;
             padding: 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Degradado moderno */
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border: none;
             border-radius: 10px;
@@ -113,7 +114,7 @@
         /* RESULTADO */
         .result-box {
             margin-top: 25px;
-            background-color: #f0fff4; /* Verde muy suave */
+            background-color: #f0fff4;
             border: 1px solid #c6f6d5;
             color: #2f855a;
             padding: 15px;
@@ -133,19 +134,32 @@
             font-weight: bold;
         }
 
-        /* Animación simple */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-
-        /* Quitar flechas del input number en algunos navegadores */
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
     </style>
+    <!-- Script para validar input mejorado -->
+    <script>
+        function validarInput(input) {
+            // 1. Reemplazar cualquier cosa que no sea número, punto o guion
+            let valor = input.value.replace(/[^0-9.-]/g, '');
+            
+            // 2. Asegurar que solo haya un punto decimal
+            const partes = valor.split('.');
+            if (partes.length > 2) {
+                valor = partes[0] + '.' + partes.slice(1).join('');
+            }
+
+            // 3. Asegurar que el guion solo esté al principio
+            if (valor.indexOf('-') > 0) {
+                valor = valor.replace(/-/g, ''); // Si está en medio, lo quita
+            }
+            // Pero permitimos escribir '-' al inicio si está vacío o es el primer char
+            
+            input.value = valor;
+        }
+    </script>
 </head>
 <body>
 
@@ -159,14 +173,14 @@
             <div class="input-group">
                 <label for="celsius">Temperatura Actual</label>
                 <input 
-                    type="number" 
+                    type="text" 
+                    inputmode="decimal"
                     id="celsius"
                     name="celsius" 
-                    step="any" 
                     value="{{ celsius }}" 
-                    placeholder="Ej: 25.5" 
+                    placeholder="Ej: 17" 
                     required
-                    oninput="this.value = this.value.replace(/[^0-9.-]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                    oninput="validarInput(this)"
                 >
             </div>
 
