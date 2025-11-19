@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Termómetro IA</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body { font-family: sans-serif; background: #222; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;}
+        .box { background: #333; padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+        input { padding: 10px; border-radius: 5px; border: none; width: 70%; margin-bottom: 10px;}
+        button { padding: 10px 20px; background: #00C851; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;}
+        button:hover { background: #007E33; }
+        h2 { color: #00C851; }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h1>🌡️ Conversor IA</h1>
+        <p>Red Neuronal con TensorFlow</p>
+        <form method="post">
+            {% csrf_token %}
+            <input type="number" step="any" name="celsius" value="{{ celsius }}" placeholder="Ingresa Grados Centígrados" required>
+            <br><br>
+            <button type="submit">PREDECIR</button>
+        </form>
+        {% if resultado %}
+            <h2>Es aproximadamente: {{ resultado|floatformat:1 }} ºF</h2>
+        {% endif %}
+    </div>
+</body>
+</html>
