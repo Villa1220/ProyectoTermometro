@@ -2,4 +2,4 @@ Django
 tensorflow
 numpy
 gunicorn
-whitenoise2
+whitenoise
