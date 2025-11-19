@@ -1,30 +1,185 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-    <title>Termómetro IA</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversor IA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body { font-family: sans-serif; background: #222; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0;}
-        .box { background: #333; padding: 40px; border-radius: 15px; text-align: center; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
-        input { padding: 10px; border-radius: 5px; border: none; width: 70%; margin-bottom: 10px;}
-        button { padding: 10px 20px; background: #00C851; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;}
-        button:hover { background: #007E33; }
-        h2 { color: #00C851; }
+        /* ESTILO GENERAL */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f0f4f8; /* Fondo gris muy suave */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        /* TARJETA CENTRAL */
+        .card {
+            background: #ffffff;
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* Sombra elegante */
+            text-align: center;
+            width: 100%;
+            max-width: 400px;
+            transition: transform 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px); /* Pequeña elevación al pasar el mouse */
+        }
+
+        /* ICONO Y TITULOS */
+        .icon {
+            font-size: 50px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        h1 {
+            margin: 10px 0 5px 0;
+            color: #2d3748;
+            font-size: 24px;
+        }
+
+        p {
+            color: #718096;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* INPUT (CAJA DE TEXTO) */
+        .input-group {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a5568;
+            margin-bottom: 5px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 18px;
+            color: #2d3748;
+            box-sizing: border-box; /* Para que el padding no rompa el ancho */
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input[type="number"]:focus {
+            border-color: #4299e1; /* Azul al escribir */
+            box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.2);
+        }
+
+        /* BOTÓN */
+        button {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); /* Degradado moderno */
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 5px 15px rgba(118, 75, 162, 0.4);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* RESULTADO */
+        .result-box {
+            margin-top: 25px;
+            background-color: #f0fff4; /* Verde muy suave */
+            border: 1px solid #c6f6d5;
+            color: #2f855a;
+            padding: 15px;
+            border-radius: 10px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .result-title {
+            font-size: 12px;
+            color: #68d391;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .result-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        /* Animación simple */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Quitar flechas del input number en algunos navegadores */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h1>🌡️ Conversor IA</h1>
-        <p>Red Neuronal con TensorFlow</p>
+
+    <div class="card">
+        <span class="icon">🌡️</span>
+        <h1>Conversor de Celsius a Fahrenheit</h1>
+        
         <form method="post">
             {% csrf_token %}
-            <input type="number" step="any" name="celsius" value="{{ celsius }}" placeholder="Ingresa Grados Centígrados" required>
-            <br><br>
-            <button type="submit">PREDECIR</button>
+            
+            <div class="input-group">
+                <label for="celsius">Temperatura Actual</label>
+                <input 
+                    type="number" 
+                    id="celsius"
+                    name="celsius" 
+                    step="any" 
+                    value="{{ celsius }}" 
+                    placeholder="Ej: 25.5" 
+                    required
+                    oninput="this.value = this.value.replace(/[^0-9.-]/g, '').replace(/(\..*?)\..*/g, '$1');"
+                >
+            </div>
+
+            <button type="submit">CALCULAR PREDICCIÓN</button>
         </form>
+
         {% if resultado %}
-            <h2>Es aproximadamente: {{ resultado|floatformat:1 }} ºF</h2>
+            <div class="result-box">
+                <div class="result-title">Predicción del modelo</div>
+                <div class="result-value">{{ resultado|floatformat:1 }} ºF</div>
+            </div>
         {% endif %}
     </div>
+
 </body>
 </html>
